@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+    "flag"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/olahol/melody.v1"
@@ -23,12 +24,22 @@ import (
 var webUI embed.FS
 
 func main() {
+    
+    //Агрументы командной строки
+    addr := flag.String("addr","127.0.0.1","ip адрес сервера или домен")
+    port := flag.String("port", "8888", "Порт сервера")
+    flag.Parse()
+    //Преобразование аргументов
+    url := *addr+":"+*port
+    //
+    
 	var err error
 
 	logger.Log.Info("Запуск приложения!")
 
 	r := mux.NewRouter()
-	m := melody.New()
+    
+    m := melody.New()
 
 	r.HandleFunc("/saveConfig", config.SaveConfig)
 	r.HandleFunc("/loadConfig", config.LoadConfig)
@@ -68,14 +79,14 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:8888",
+		Addr:         url,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
 	}
 
-	err = tools.OpenBrowser("http://127.0.0.1:8888/")
-	if err != nil {
+	err = tools.OpenBrowser("http://"+url+"/")
+	if err != nil {   
 		logger.Log.Fatal("Ошибка при открытии браузера:", err)
 	}
 

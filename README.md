@@ -11,3 +11,25 @@
 **Возможности скачивания платной манги нет и не будет!**
 
 ![Интерфейс](https://lirix360.github.io/ReadmangaGrabber/screenshot.png?raw=true)
+
+## Аргументы командной строки
+
+
+## Примеры
+
+ * addr string  
+        ip адрес сервера или домен (default "127.0.0.1")
+ * port string  
+        Порт сервера (default "8888")
+
+### Запуск с изменением сетивого адреса и порта 
+
+```
+./grabber_linux_x64 --addr "192.168.42.46"
+```
+
+
+```
+./grabber_linux_x64  -port "8080" --addr "my.localdomain"
+```
+
