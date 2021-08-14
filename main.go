@@ -28,9 +28,11 @@ func main() {
     //Агрументы командной строки
     addr := flag.String("addr","127.0.0.1","ip адрес сервера или домен")
     port := flag.String("port", "8888", "Порт сервера")
+    conf_path := flag.String("conf", "", "Путь к конфигурационному файлу")
     flag.Parse()
     //Преобразование аргументов
     url := *addr+":"+*port
+    config.InitConf(*conf_path)
     //
     
 	var err error

@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.0
+	github.com/adrg/xdg v0.3.3
 	github.com/byung82/go-cloudflare-scraper v0.0.0-20210326023602-b801d58c4ab2
 	github.com/cavaliercoder/grab v2.0.0+incompatible
 	github.com/dsnet/compress v0.0.1 // indirect

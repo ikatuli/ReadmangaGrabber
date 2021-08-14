@@ -7,8 +7,11 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+    "os"
+    "runtime"
 
 	"github.com/lirix360/ReadmangaGrabber/logger"
+    "github.com/adrg/xdg"
 )
 
 // GrabberConfig - ...
@@ -27,11 +30,44 @@ type GrabberConfig struct {
 // Cfg - ...
 var Cfg GrabberConfig
 
-func init() {
-	err := readConfig("grabber_config.json")
+var GlobalFilePath string
+
+func InitConf(filePath string) error{
+    
+    //Проверяется существование конфигов в нескольких местах.
+    /*Приоритеты:
+     * Католог исполнения
+     * Каталог XDG Base Directory
+     * etc
+    */
+    
+    if filePath=="" {
+    
+        if runtime.GOOS == "linux" {
+            if _, err := os.Stat("/etc/grabber_config.json"); err == nil {
+            filePath="/etc/grabber_config.json"
+            }
+        }
+    
+        if configFilePath, err := xdg.SearchConfigFile("grabber_config.json"); err == nil {
+		    filePath = configFilePath
+	    }
+	
+        if _, err := os.Stat("grabber_config.json"); err == nil {
+            filePath="grabber_config.json"
+        }
+    }
+	
+	err := readConfig(filePath)
 	if err != nil {
 		logger.Log.Fatal("Ошибка при чтении файла конфигурации:", err)
-	}
+	} else {
+        logger.Log.Info("Найден файла конфигурации "+filePath)
+    }
+    
+    GlobalFilePath = filePath
+    
+    return nil
 }
 
 func readConfig(filePath string) error {
@@ -78,5 +114,5 @@ func SaveConfig(w http.ResponseWriter, r *http.Request) {
 	Cfg.Mangalib.TimeoutChapter, _ = strconv.Atoi(r.FormValue("mangalib_timeout_chapter"))
 	Cfg.Mangalib.TimeoutImage, _ = strconv.Atoi(r.FormValue("mangalib_timeout_image"))
 
-	writeConfig("grabber_config.json", Cfg)
+	writeConfig(GlobalFilePath, Cfg)
 }
